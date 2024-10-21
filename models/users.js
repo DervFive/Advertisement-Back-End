@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import { toJSON } from '@reis/mongoose-to-json'
-import { required } from "joi";
 
 
 const userSchema = new Schema({
@@ -23,6 +22,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    avartar:{
+        type:String,
+        
+    }
+    ,
     role: {
         type: String,
         enum: [
