@@ -40,4 +40,11 @@ export const upload  = multer({
     }),
     preservePath:true
 })
+export const advertUpload  = multer({
+    storage :multerSaveFilesOrg({
+        apiAccessToken:process.env.SAVEFILESORG_API_KEY,
+        relativePath:'/Advertisements/Advert',
+    }),
+    preservePath:true
+})
 
