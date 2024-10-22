@@ -6,14 +6,17 @@ import { createAdvertValidator, updateAdvertValidator } from '../validators/adve
 // POST
 export const createAdvert = async (req, res) => {
   try {
-     const { error, value } = createAdvertValidator.validate({
-       ...req.body,
-       image: req.file?.filename,
-     });
-     if (error) {
-       return res.status(422).json(error);
-     }
-    const advert = new Advert(req.body,value);
+    const { error, value } = createAdvertValidator.validate({
+      ...req.body,
+      image: req.file?.filename,
+    });
+    if (error) {
+      return res.status(422).json(error);
+    }
+    const advert = new Advert({
+      ...value,
+      createBy: req.auth.id
+    });
     await advert.save();
     res.status(201).json(advert);
   } catch (error) {
@@ -24,14 +27,14 @@ export const createAdvert = async (req, res) => {
 
 // GET
 export const getAllAdverts = async (req, res) => {
-  const { title, category, price } = req.query;
-  const query = {};
-  if (title) query.title = { $regex: title, $options: 'i' };
-  if (category) query.category = category;
-  if (price) query.price = { $lte: price };
-
   try {
-    const adverts = await Advert.find(query);
+    const { filter = "{}",sort= '{}',limit =10,skip=0}=req.query
+
+    const adverts = await Advert
+    .find(JSON.parse(filter))
+    .sort(JSON.parse(sort))
+    .limit(limit)
+    .skip(skip);
     res.status(200).json(adverts);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch adverts', error });
@@ -43,7 +46,9 @@ export const getAllAdverts = async (req, res) => {
 export const getAdvertById = async (req, res) => {
   try {
     const advert = await Advert.findById(req.params.id);
-    if (!advert) return res.status(404).json({ message: 'Advert not found' });
+    if (!advert){
+      return res.status(404).json({ message: 'Advert not found' });
+    } 
     res.status(200).json(advert);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch advert', error });
@@ -54,37 +59,45 @@ export const getAdvertById = async (req, res) => {
 //  Update advert
 export const updateAdvert = async (req, res) => {
   try {
-     const { error, value } = updateAdvertValidator.validate({
-       ...req.body,
-       image: req.file?.filename,
-     });
-     if (error){
+    const { error, value } = updateAdvertValidator.validate({
+      ...req.body,
+      image: req.file?.filename,
+    });
+    if (error) {
       return res.status(422).json(error)
-     }
-    const advert = await Advert.findById(req.params.id);
-    if (!advert) return res.status(404).json({ message: 'Advert not found' });
+    }
+    const updatedAdvert = await Advert.findByIdAndUpdate({ _id: req.params.id, user: req.auth.id }, { new: true });
+    if (!updateAdvert) return res.status(404).json({ message: 'Advert not found' });
 
-    // if (advert.vendor.toString() !== req.user.id) {
-    //   return res.status(403).json({ message: 'Unauthorized to update this advert' });
-    // }
-    const updatedAdvert = await Advert.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(updatedAdvert);
   } catch (error) {
     res.status(500).json({ message: 'Failed to update advert', error });
   }
 };
 
+export const countAdvert = async (req,res)=>{
+  try {
+    const {filter ="{}"}= req.query
+    // count advert in the database 
+
+    const count = await Advert.countDocuments(JSON.parse(filter))
+    res.status(200).json({count})
+  } catch (error) {
+    
+  }
+}
+
+
+
 
 // DELETE
 export const deleteAdvert = async (req, res) => {
   try {
     const adverts = await Advert.findById(req.params.id);
-    if (!adverts) return res.status(404).json({ message: 'Advert not found' });
+    if (!adverts) {
 
-    // if (advert.vendor.toString() !== req.user.id) {
-    //   return res.status(403).json({ message: 'Unauthorized to delete this advert' });
-    // }
-
+      return res.status(404).json({ message: 'Advert not found' });
+    }
     await Advert.findByIdAndDelete(adverts);
     res.status(200).json({ message: 'Advert deleted' });
   } catch (error) {
