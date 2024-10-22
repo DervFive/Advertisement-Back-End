@@ -1,16 +1,26 @@
 // controllers/advert.js
 import Advert from '../models/advert.js';
+import { createAdvertValidator, updateAdvertValidator } from '../validators/advertValidator.js';
+
 
 // POST
 export const createAdvert = async (req, res) => {
   try {
-    const advert = new Advert(req.body);
+     const { error, value } = createAdvertValidator.validate({
+       ...req.body,
+       image: req.file?.filename,
+     });
+     if (error) {
+       return res.status(422).json(error);
+     }
+    const advert = new Advert(req.body,value);
     await advert.save();
     res.status(201).json(advert);
   } catch (error) {
     res.status(500).json({ message: 'Failed to create advert', error });
   }
 };
+
 
 // GET
 export const getAllAdverts = async (req, res) => {
@@ -28,6 +38,7 @@ export const getAllAdverts = async (req, res) => {
   }
 };
 
+
 // GET
 export const getAdvertById = async (req, res) => {
   try {
@@ -39,9 +50,17 @@ export const getAdvertById = async (req, res) => {
   }
 };
 
+
 //  Update advert
 export const updateAdvert = async (req, res) => {
   try {
+     const { error, value } = updateAdvertValidator.validate({
+       ...req.body,
+       image: req.file?.filename,
+     });
+     if (error){
+      return res.status(422).json(error)
+     }
     const advert = await Advert.findById(req.params.id);
     if (!advert) return res.status(404).json({ message: 'Advert not found' });
 

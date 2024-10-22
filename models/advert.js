@@ -1,6 +1,7 @@
 
 
 import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 const advertSchema = new mongoose.Schema({
   title: {
