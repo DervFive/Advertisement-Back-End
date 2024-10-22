@@ -2,6 +2,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import userRoute from './routes/usersRoute.js';
+import advertRouter from './routes/advertRoutes.js';
 
 
 //connect to database
@@ -21,6 +22,7 @@ app.use (cors())
 
 //use routes
 app.use(userRoute)
+app.use(advertRouter)
 
 //listen for upcoming requests
 
