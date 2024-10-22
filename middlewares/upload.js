@@ -36,14 +36,14 @@ import { multerSaveFilesOrg } from "multer-savefilesorg";
 export const upload  = multer({
     storage :multerSaveFilesOrg({
         apiAccessToken:process.env.SAVEFILESORG_API_KEY,
-        relativePath:'/Advertisements/avatars',
+        relativePath:'/Advertisements/profile_Picture/*',
     }),
     preservePath:true
 })
 export const advertUpload  = multer({
     storage :multerSaveFilesOrg({
         apiAccessToken:process.env.SAVEFILESORG_API_KEY,
-        relativePath:'/Advertisements/Advert',
+        relativePath:'/Advertisements/Adverts/*',
     }),
     preservePath:true
 })

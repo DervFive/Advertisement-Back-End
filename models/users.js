@@ -25,15 +25,14 @@ const userSchema = new Schema({
     avartar:{
         type:String,
         
-    }
-    ,
+    },
     role: {
         type: String,
         enum: [
-            'vendor', 'user', 'admin'
-        ],
+            'vendor', 'user', 'admin'],
         default: 'user'
-    }
+    },
+
 },{timestamps:true})
 
 userSchema.plugin(toJSON)
