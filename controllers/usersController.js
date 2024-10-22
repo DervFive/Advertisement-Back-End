@@ -11,7 +11,7 @@ export const registerUser = async (req, res, next) => {
         }
         //     // check if user does not exist
         const user = await UserModel.findOne({ email: value.email })
-        if (!user) {
+        if (user) {
             return res.status(409).json('User already exists')
         }
         //     // hash user password
