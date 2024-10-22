@@ -1,4 +1,5 @@
 
+
 import mongoose from 'mongoose';
 
 const advertSchema = new mongoose.Schema({
@@ -14,18 +15,19 @@ const advertSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-//   category: {
-//     type: String,
-//     required: true,
-//   },
-//   image: {
-//     type: String,
-//   },
-//   vendor: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'User',
-//     required: true,
-//   },
+  category: {
+    type: String,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  vendor: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
   
 });
 
