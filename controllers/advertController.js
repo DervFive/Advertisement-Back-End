@@ -55,6 +55,7 @@ export const updateAdvert = async (req, res) => {
   }
 };
 
+
 // DELETE
 export const deleteAdvert = async (req, res) => {
   try {
