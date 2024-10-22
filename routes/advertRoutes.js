@@ -28,27 +28,27 @@ import {
   updateAdvert, 
   deleteAdvert, 
   getAdvertById,
-  getAllAdverts
+  getAllAdverts,
+  countAdvert
 } from '../controllers/advertController.js';
-// import { checkAdvertExists, verifyAdvertOwner } from '../middleware/advert.js';
-// import { verifyVendor } from '../middleware/'; // Assumed middleware for verifying vendor
+import { hasPermission, isAuthentication } from '../middlewares/auth.js';
+import { upload } from '../middlewares/upload.js';
 
 const advertRouter = Router();
 
-// POST: Create a new advert (Only vendors can create adverts)
-advertRouter.post('/advert', createAdvert);
-
-// GET: Get all adverts (Accessible by all users)
+advertRouter.get('/adverts/count',countAdvert)
 advertRouter.get('/advert',getAllAdverts );
 
-// GET: Get advert details by ID (Accessible by all users)
 advertRouter.get('/advert/:id',getAdvertById );
 
-// PUT: Update an advert (Only vendors can update their own adverts)
-advertRouter.patch('/advert/:id', updateAdvert);
 
-// DELETE: Delete an advert (Only vendors can delete their own adverts)
-advertRouter.delete('/advert/:id', deleteAdvert);
+
+// Protect route
+advertRouter.post('/advert',isAuthentication,hasPermission('add_advert'),upload.single('image'), createAdvert);
+
+advertRouter.patch('/advert/:id',isAuthentication,hasPermission('update_advert'),upload.single('image'), updateAdvert);
+
+advertRouter.delete('/advert/:id',isAuthentication,hasPermission('delete_advert'), deleteAdvert);
 
 export default advertRouter;
 
