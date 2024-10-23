@@ -3,20 +3,29 @@ import { toJSON } from '@reis/mongoose-to-json'
 
 
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
+    name:{
+        type:String,
+        
     },
-    userName:{
+    businessName: {
         type: String,
-        required:true,
-        unique:true
+        required: true,
+        trim: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
         lowercase: true,
+        trim: true,
+    },
+    phone:{
+        type:String,
+        required: true,
+    },
+    location:{
+        type:String,
+        required: true,
     },
     password: {
         type: String,
@@ -24,7 +33,7 @@ const userSchema = new Schema({
     },
     avartar:{
         type:String,
-        
+        default:null
     },
     role: {
         type: String,

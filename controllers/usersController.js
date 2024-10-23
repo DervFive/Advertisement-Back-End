@@ -2,6 +2,7 @@ import { UserModel } from "../models/users.js";
 import { loginUserValidator, registerUserValidator, updatedProfileValidator } from "../validators/usersValidator.js";
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { mailTransporter } from "../utils/mail.js";
 export const registerUser = async (req, res, next) => {
     try {
         //     // Validate user input
@@ -19,6 +20,11 @@ export const registerUser = async (req, res, next) => {
         //     // save user into the database
         await UserModel.create({ ...value, password: hashPassword })
         // send user confirmation email
+        await mailTransporter.sendMail({
+            to:value.email,
+            subject:"User Registration ",
+            text:"Account registered Successfully",
+        })
         // Respond to request
         res.status(201).json('User is registered')
     } catch (error) {
@@ -36,7 +42,7 @@ export const loginUser = async (req, res, next) => {
         }
         //  Find one user with identifier
         const user = await UserModel.findOne({
-            userName: value.userName
+            email: value.email
         });
         if (!user) {
             return res.status(404).json('User does not exist')
@@ -48,7 +54,7 @@ export const loginUser = async (req, res, next) => {
            return res.status(401).json('Invalid password') 
         }
         // Sign a tokon for user
-        const token = jwt.sign({id:user.id},process.env.JWT_PRIVATE_KEY,{expiresIn:'5h'})
+        const token = jwt.sign({id:user.id},process.env.JWT_PRIVATE_KEY,{expiresIn:'24h'})
         // Responsd to request
         res.status(200).json({message: 'User is logged in',accessToken:token})
     } catch (error) {
@@ -87,8 +93,10 @@ export const updatedProfile = async (req, res, next) => {
            res.status(422).json(error)
         }
         // Update user
-         await UserModel.findByIdAndUpdate(req.auth.id,value);
-
+         const updatedUser=await UserModel.findByIdAndUpdate(req.auth.id,value,{new:true});
+         if (!updatedUser) {
+            return res.status(404).json('User not found')
+         }
         res.status(200).json('User profile updated successfully')
     } catch (error) {
         next(error)
