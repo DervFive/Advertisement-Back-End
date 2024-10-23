@@ -34,7 +34,7 @@ export const getAllAdverts = async (req, res) => {
     .find(JSON.parse(filter))
     .sort(JSON.parse(sort))
     .limit(limit)
-    .skip(skip);
+    .skip(skip).populate('createdBy','userName');
     res.status(200).json(adverts);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch adverts', error });
@@ -45,7 +45,7 @@ export const getAllAdverts = async (req, res) => {
 // GET
 export const getAdvertById = async (req, res) => {
   try {
-    const advert = await Advert.findById(req.params.id);
+    const advert = await Advert.findById(req.params.id).populate('createdBy','userName');
     if (!advert){
       return res.status(404).json({ message: 'Advert not found' });
     } 

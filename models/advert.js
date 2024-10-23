@@ -24,7 +24,7 @@ const advertSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  createBy: {
+  createdBy: {
     type: Types.ObjectId,
     ref: 'User',
     required: true,

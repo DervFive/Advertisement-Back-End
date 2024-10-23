@@ -32,7 +32,7 @@ import {
   countAdvert
 } from '../controllers/advertController.js';
 import { hasPermission, isAuthentication } from '../middlewares/auth.js';
-import { upload } from '../middlewares/upload.js';
+import { advertUpload } from '../middlewares/upload.js';
 
 const advertRouter = Router();
 
@@ -44,9 +44,9 @@ advertRouter.get('/advert/:id',getAdvertById );
 
 
 // Protect route
-advertRouter.post('/advert',isAuthentication,hasPermission('add_advert'),upload.single('image'), createAdvert);
+advertRouter.post('/advert',isAuthentication,hasPermission('add_advert'),advertUpload.single('image'), createAdvert);
 
-advertRouter.patch('/advert/:id',isAuthentication,hasPermission('update_advert'),upload.single('image'), updateAdvert);
+advertRouter.patch('/advert/:id',isAuthentication,hasPermission('update_advert'),advertUpload.single('image'), updateAdvert);
 
 advertRouter.delete('/advert/:id',isAuthentication,hasPermission('delete_advert'), deleteAdvert);
 

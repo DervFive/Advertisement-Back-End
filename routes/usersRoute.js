@@ -14,7 +14,7 @@ userRoute.post('/user/login',loginUser)
 
 userRoute.post('/user/logout',logoutUser)
 
-userRoute.get("/user/profile", hasPermission("get_profile"), getUserProfile);
+userRoute.get("/user/profile",isAuthentication, hasPermission("get_profile"), getUserProfile);
 
 userRoute.patch("/users/me",isAuthentication, hasPermission("update_profile"),upload.single("avatar"),updatedProfile
 );
