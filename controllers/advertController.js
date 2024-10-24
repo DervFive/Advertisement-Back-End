@@ -10,7 +10,7 @@ import { advertUpload } from "../middlewares/upload.js";
 export const createAdvert = async (req, res) => {
   try {
     // console.log(req.body)
-    const { error, value } = createAdvertValidator.validate({...req.body,image:req.file?.filename,});
+    const { error, value } = createAdvertValidator.validate({ ...req.body, image: req.file?.filename, });
     if (error) {
       return res.status(422).json(error);
     }
@@ -93,21 +93,22 @@ export const countAdvert = async (req, res) => {
   try {
     const { filter = "{}" } = req.query;
     // count advert in the database
-
     const count = await Advert.countDocuments(JSON.parse(filter));
     res.status(200).json({ count });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // DELETE
 export const deleteAdvert = async (req, res) => {
   try {
-    const adverts = await Advert.findById(req.params.id);
+    // const adverts = await Advert.findById(req.params.id);
+    const adverts = await Advert.findByIdAndDelete({
+      _id: req.params.id,
+      user: req.auth.id});
     if (!adverts) {
       return res.status(404).json({ message: "Advert not found" });
     }
-    await Advert.findByIdAndDelete(adverts);
-    res.status(200).json({ message: "Advert deleted" });
+    res.status(200).json("Advert Deleted");
   } catch (error) {
     res.status(500).json({ message: "Failed to delete advert", error });
   }
