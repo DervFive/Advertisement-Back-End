@@ -7,6 +7,8 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { mailTransporter } from "../utils/mail.js";
+import Advert from "../models/advert.js";
+
 export const registerUser = async (req, res, next) => {
   try {
     //     // Validate user input
@@ -67,6 +69,25 @@ export const loginUser = async (req, res, next) => {
   }
 };
 
+export const getUserAdverts = async (req, res, next) => {
+  try {
+    const { filter = "{}", sort = "{}", limit = 10, skip = 0 } = req.query;
+
+    const adverts = await Advert
+      .find({
+        ...JSON.parse(filter),
+        user: req.auth.id
+      })
+      .sort(JSON.parse(sort))
+      .limit(limit)
+      .skip(skip)
+      .populate("user", "businessName");
+    res.status(200).json(adverts);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export const getUserProfile = async (req, res, next) => {
   try {
     // Find authenticated user from the database
@@ -82,7 +103,7 @@ export const getUserProfile = async (req, res, next) => {
 export const logoutUser = (req, res, next) => {
   try {
     res.status(200).json("User logout sucessfully");
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const updatedProfile = async (req, res, next) => {
