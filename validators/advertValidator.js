@@ -7,7 +7,6 @@ export const createAdvertValidator = Joi.object({
   price: Joi.number().required(),
   category: Joi.string().required(),
   image: Joi.string().required(),
-  createBy: Joi.string().required()
 
 });
 
@@ -17,5 +16,4 @@ export const updateAdvertValidator = Joi.object({
   price: Joi.number().required(),
   category: Joi.string().required(),
   image: Joi.string().required(),
-  createdBy: Joi.string().required()
 })
