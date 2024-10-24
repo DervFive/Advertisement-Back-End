@@ -5,6 +5,25 @@ import userRoute from './routes/usersRoute.js';
 import advertRouter from './routes/advertRoutes.js';
 
 
+
+
+//create an express app
+const app = express();
+
+//use middlewares
+// app.use (express.json())
+app.use(express.json())
+app.use (cors())
+
+//use routes
+app.use(advertRouter);
+app.use(userRoute)
+
+
+//listen for upcoming requests
+
+const PORT = 3004
+
 //connect to database
 try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -12,21 +31,6 @@ try {
 } catch (error) {
     console.log(error)
 }
-
-//create an express app
-const app = express();
-
-//use middlewares
-app.use (express.json())
-app.use (cors())
-
-//use routes
-app.use(userRoute)
-app.use(advertRouter)
-
-//listen for upcoming requests
-
-const PORT = 3004
 app.listen(PORT,() =>{
     console.log(`app is listening on port ${PORT}`)
 })
