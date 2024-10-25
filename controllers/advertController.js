@@ -35,7 +35,7 @@ export const createAdvert = async (req, res) => {
 // GET
 export const getAllAdverts = async (req, res) => {
   try {
-    const { filter = "{}", sort = "{}", limit = 10, skip = 0 } = req.query;
+    const { filter = "{}", sort = "{}", limit = 30, skip = 0 } = req.query;
 
     const adverts = await Advert.find(JSON.parse(filter))
       .sort(JSON.parse(sort))
